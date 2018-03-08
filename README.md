@@ -1,1 +1,3 @@
 # facebrain
+
+Just playing around with React.js, Clarifai API, Node.js, Express.js, ...
