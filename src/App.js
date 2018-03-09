@@ -6,25 +6,15 @@ import Register from './components/Register/Register';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
+import Images from './assets/Images';
 import './App.css';
+
 
 const app = new Clarifai.App({
   apiKey: 'e1d7e8aea2fa49b39bc8b2bd24386c1b'
  }); 
 
- const images = [
-   'https://cdn.wccftech.com/wp-content/uploads/2018/01/Trump.jpg',
-   'https://lobelog.com/wp-content/uploads/0620trumppolicies01-1.jpg',
-   'http://static5.uk.businessinsider.com/image/588f61fcdd089527278b4a6f-480/donald-trump.jpg',
-   'https://news-images.vice.com/images/articles/meta/2016/05/05/trump-emergency-mexico-reacts-to-the-real-possibility-of-a-trump-presidency-1462478545.jpg',
-   'https://www.theglobepost.com/wp-content/uploads/2017/04/Trump1.jpg',
-   'https://media.nu.nl/m/rfdx2eda9uvt_wd1280.jpg',
-   'https://images1.persgroep.net/rcs/S0ctHhiNdjiLN6EAJoaZtl2pC_k/diocontent/119936421/_fitwidth/763?appId=2dc96dd3f167e919913d808324cbfeb2&quality=0.8',
-   'https://media4.s-nbcnews.com/j/newscms/2017_46/2227061/171115-kim-tractor-mc-1139_ecc9e0f4fa88ae6821c6dd820befe719.nbcnews-ux-2880-1000.jpg',
-   'https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2018/01/15/16/kim-jong-un.jpg',
-   'https://images1.persgroep.net/rcs/3fL3_IHnK6nYXgGzCP4MuzYEHuI/diocontent/116982128/_fitwidth/763?appId=2dc96dd3f167e919913d808324cbfeb2&quality=0.8',
-   'https://secure.i.telegraph.co.uk/multimedia/archive/02701/kim_2701423b.jpg',
- ];
+const images = Images;
 
 class App extends Component {
 
@@ -34,12 +24,29 @@ class App extends Component {
       box: {},
       route: 'signin',
       isSignedIn: false,
+      user: {
+        id: '',
+        name: '',
+        email: '',
+        entries: 0,
+        joined: ''
+      }
     }
     this.vars = {
       input: '',
       imageUrl: this.getRandomImage(),
     }
   }
+
+  loadUser = (data) => {
+    this.setState({user: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    }});
+  } 
 
   getRandomImage = () => {
     return images[Math.floor(Math.random()*images.length)];
@@ -82,19 +89,34 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.vars.imageUrl = this.vars.input;
-    this.callClarifaiApi();
+    this.callClarifaiApi(true);
   }
 
   onButtonRandom = () => {
     this.vars.imageUrl = this.getRandomImage();
-    this.callClarifaiApi();
+    this.callClarifaiApi(false);
   }
 
-  callClarifaiApi = () => {
+  callClarifaiApi = (count) => {
     app.models.predict(
       Clarifai.FACE_DETECT_MODEL, 
       this.vars.imageUrl)
-    .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+    .then(response => {
+      if(response && count){
+        fetch('http://localhost:3000/image', {
+          method: 'put',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                id: this.state.user.id
+            })
+        })
+        .then(response => response.json())
+        .then(count => {
+          this.setState(Object.assign(this.state.user, {entries: count}));
+        });
+      }
+      this.displayFaceBox(this.calculateFaceLocation(response))
+    })
     .catch(err => console.log(err));
   }
 
@@ -103,7 +125,7 @@ class App extends Component {
       this.setState({isSignedIn: false});
     } else if (route === 'home') {
       this.setState({isSignedIn: true});
-      this.callClarifaiApi();
+      this.callClarifaiApi(false);
     }
     this.setState({route: route});
   }
@@ -115,7 +137,7 @@ class App extends Component {
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         {route === 'home'
         ? <div>
-          <Rank />
+          <Rank name={this.state.user.name} entries={this.state.user.entries} />
           <ImageLinkForm 
             onInputChange={this.onInputChange} 
             onButtonSubmit={this.onButtonSubmit} 
@@ -125,8 +147,8 @@ class App extends Component {
           </div>
         : (
           route === 'signin'
-          ? <SignIn onRouteChange={this.onRouteChange} />
-          : <Register onRouteChange={this.onRouteChange} />
+          ? <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+          : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
         )
         }
       </div>
