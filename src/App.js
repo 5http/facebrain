@@ -32,7 +32,7 @@ class App extends Component {
       input: '',
       imageUrl: this.getRandomImage(),
     }
-    document.title = 'FaceBrain';
+    
   }
 
   loadUser = (data) => {
