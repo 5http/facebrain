@@ -10,6 +10,11 @@ const Images = [
     'https://static.independent.co.uk/s3fs-public/styles/article_small/public/thumbnails/image/2018/01/15/16/kim-jong-un.jpg',
     'https://images1.persgroep.net/rcs/3fL3_IHnK6nYXgGzCP4MuzYEHuI/diocontent/116982128/_fitwidth/763?appId=2dc96dd3f167e919913d808324cbfeb2&quality=0.8',
     'https://secure.i.telegraph.co.uk/multimedia/archive/02701/kim_2701423b.jpg',
+    'https://hips.hearstapps.com/esqnl.h-cdn.co/assets/17/44/1600x713/gallery-1509639266-i-tonya-margot-robbie.jpg',
+    'https://www.bleedingcool.com/wp-content/uploads/2018/01/Margot-Robbie.jpg',
+    'https://bbook.com/wp-content/uploads/2017/10/I-Tonya-trailer-1.jpg',
+    'https://www.gossipcop.com/wp-content/uploads/2018/03/Brad-Pitt-Celibate-Year.jpg',
+    'https://www.hellomagazine.com/imagenes/celebrities/2016111034526/brad-pitt-talks-angelina-jolie-split-allied-premiere/0-181-8/pitt-t.jpg'
 ];
 
 export default Images;

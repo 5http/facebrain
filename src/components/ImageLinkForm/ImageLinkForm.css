@@ -1,8 +1,11 @@
-.form {
-    width:700px;
-    background:rgba(255,255,255,.5);
+.input-disabled {
+    cursor: not-allowed;
 }
 
-.red {
-    border: 1px solid red;
+.border-red {
+    border: 3px solid red;
+}
+
+#detect, #random {
+    border: 0;
 }

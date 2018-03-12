@@ -50,7 +50,7 @@ class App extends Component {
 
   calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs["0"].data.regions["0"].region_info.bounding_box;
-    const image = document.getElementById('inputimage');
+    const image = document.getElementById('inputImage');
     const width = Number(image.width);
     const height = Number(image.height);
 
@@ -83,9 +83,9 @@ class App extends Component {
     this.vars.input = event.target.value;
   }
 
-  onButtonSubmit = () => {
-    this.vars.imageUrl = this.vars.input;
-    this.callClarifaiApi(true);
+  onButtonSubmit = (imageUrl) => {
+      this.vars.imageUrl = imageUrl;
+      this.callClarifaiApi(true);
   }
 
   onButtonRandom = () => {
@@ -123,13 +123,18 @@ class App extends Component {
   }
 
   onRouteChange = (route) => {
-    if (route === 'signout') {
-      this.setState(initialState);
-    } else if (route === 'home') {
-      this.setState({isSignedIn: true});
-      this.callClarifaiApi(false);
+    switch (route) {
+        case 'home':
+          this.callClarifaiApi(false);
+          this.setState({isSignedIn: true});
+          this.setState({route: route});
+          break;
+        case 'signout':
+          this.setState(Object.assign(this.state, initialState));
+          break;
+        default:
+          this.setState({route: route});
     }
-    this.setState({route: route});
   }
 
   render() {

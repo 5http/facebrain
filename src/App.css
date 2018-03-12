@@ -1,5 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
 .App {
   text-align: center;
+}
+
+main {
+  width: 75%;
 }
 
 .center {
@@ -7,11 +15,23 @@
   justify-content: center;
 }
 
-.particles {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: -1;
+.validation-message {
+  font-family: sans-serif;
+  color: #8c1717;
+  margin-top: 10px;
 }
+
+.form, #inputImage {
+  width: 100%;
+  max-width: 60rem;
+}
+
+.bg-trans-white {
+  background: rgba(255,255,255,.5);
+}
+
+
+
+
+
+
